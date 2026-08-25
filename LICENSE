@@ -1,0 +1,121 @@
+KnitMotion Community Licence
+Copyright (c) 2026 KnitMotionTeam. All rights reserved.
+
+
+0. WHAT THIS COVERS, AND WHAT IT DOES NOT
+
+This licence covers only the work KnitMotionTeam created: the installer
+script, the Desktop shortcuts it writes, the accompanying documentation
+and wording, and the disk image artwork.
+
+It does not cover, and grants you no rights in, any software the
+installer downloads. That software belongs to other people. Their
+licences apply to you directly, are agreed between you and them, and are
+neither granted, extended, restricted nor interpreted by this document.
+See section 5.
+
+
+1. USE IT
+
+You may run this installer on as many of your own machines as you like,
+for as long as you like, at no cost, for personal, educational, hobby and
+creative work. You do not need an account with us, and you do not need to
+ask permission.
+
+
+2. PASS IT ON
+
+You may give this installer to anyone: a friend, a forum, a chat server,
+a class. Three conditions:
+
+  a) Share it whole and unchanged.
+  b) Keep this notice with it.
+  c) Do not charge for it.
+
+
+3. ASK US FIRST FOR ANYTHING ELSE
+
+Please write to knitmotionteam@gmail.com before you:
+
+  a) change the installer and share your version;
+  b) take parts of it into a project of your own;
+  c) use it commercially — selling it, bundling it with a paid product,
+     or running a paid service on top of it.
+
+We are easy to talk to and the answer is usually yes. We ask because we
+would like to know where it ends up, and because a modified copy that
+carries our name but not our fixes creates support problems we cannot
+solve.
+
+Permission from us under this section covers our work only. It does not
+give you any right to the software described in section 5, which you must
+obtain from its owners on their terms.
+
+
+4. NO WARRANTY, NO LIABILITY
+
+This installer is provided "as is", without warranty of any kind, express
+or implied, including but not limited to the warranties of
+merchantability, fitness for a particular purpose and non-infringement.
+
+It downloads and installs software on your Mac and makes changes to it.
+Run it because you have decided to, not because anyone promised you
+anything.
+
+To the fullest extent permitted by applicable law, KnitMotionTeam shall
+not be liable for any claim, damages or other liability, whether in
+contract, tort or otherwise, arising from or in connection with this
+installer or its use, including damage to your machine, loss of data, or
+loss of work.
+
+
+5. THIRD-PARTY SOFTWARE
+
+The installer downloads and installs software belonging to others. Each
+piece carries its own licence, which you accept directly with its owner:
+
+  Kimodo (source)     NVIDIA Corporation, Apache License 2.0
+  Kimodo (weights)    NVIDIA Open Model License
+  Llama 3 (weights)   Meta Llama 3 Community License
+  LLM2Vec (weights)   McGill-NLP, under their stated terms
+  PyTorch, Node.js, CMake and other dependencies, under their own terms
+
+You are responsible for reading and complying with those licences. Some
+of them place conditions on commercial use, redistribution and
+attribution that this document neither grants nor removes. In particular,
+permission from KnitMotionTeam to use this installer commercially does
+not permit commercial use of Kimodo, its model weights, or Llama 3;
+those rights come from NVIDIA and Meta and from nowhere else.
+
+This repository distributes none of that software. It is downloaded from
+its owners' official sources at install time.
+
+
+6. TRADEMARKS AND INDEPENDENCE
+
+This is an independent work. It is not affiliated with, sponsored by, or
+endorsed by NVIDIA Corporation, Meta Platforms, Inc., Apple Inc., or any
+other party named in it.
+
+NVIDIA and Kimodo are trademarks of NVIDIA Corporation. Llama and Meta
+are trademarks of Meta Platforms, Inc. Apple, Mac and macOS are
+trademarks of Apple Inc. All other marks belong to their respective
+owners. These names are used solely to identify the software this
+installer works with, as permitted for accurate description. No claim is
+made to them, and nothing here should be read as suggesting approval by
+their owners.
+
+If NVIDIA, Meta or Apple would prefer this project be named or presented
+differently, we will change it. Write to us.
+
+
+7. CONTACT
+
+knitmotionteam@gmail.com
+
+
+A note on what this document is: these are plain-language terms setting
+out what KnitMotionTeam intends to allow. They are not a standard open
+source licence, and they have not been reviewed by a lawyer. If you need
+legal certainty for a commercial arrangement, write to us and we will
+put something appropriate in writing.
