@@ -134,6 +134,18 @@ between platforms.
 
 ---
 
+## Contributing
+
+Bug reports are worth a lot here. Every macOS release and every new Mac
+is a chance for something to break, and we only find out when someone
+says so. If it worked, say so; if it didn't, attach
+`~/kimodo-install.log` and we can usually fix it quickly.
+
+Code changes are welcome too. See [CONTRIBUTING.md](CONTRIBUTING.md) for
+what to expect, including how contributions are licensed.
+
+---
+
 ## Licence
 
 Free for personal and community use. Share it unchanged as much as you

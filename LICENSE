@@ -91,7 +91,23 @@ This repository distributes none of that software. It is downloaded from
 its owners' official sources at install time.
 
 
-6. TRADEMARKS AND INDEPENDENCE
+6. CONTRIBUTIONS
+
+By submitting a contribution to this project — a pull request, a patch, a
+suggested wording — you agree that it may be distributed as part of this
+project under these terms, and that KnitMotionTeam may relicense the
+project in future, including under a recognised open source licence,
+without asking you again.
+
+You keep the copyright in what you wrote. This clause exists so the
+project can continue to ship as one coherent piece rather than as a
+patchwork of terms.
+
+If you would rather not agree to that, please describe the fix in an
+issue instead of sending a patch.
+
+
+7. TRADEMARKS AND INDEPENDENCE
 
 This is an independent work. It is not affiliated with, sponsored by, or
 endorsed by NVIDIA Corporation, Meta Platforms, Inc., Apple Inc., or any
@@ -109,7 +125,7 @@ If NVIDIA, Meta or Apple would prefer this project be named or presented
 differently, we will change it. Write to us.
 
 
-7. CONTACT
+8. CONTACT
 
 knitmotionteam@gmail.com
 

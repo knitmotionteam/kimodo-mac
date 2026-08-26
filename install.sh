@@ -72,7 +72,10 @@
 #    8. The motion polish module is compiled with -msse4.1 and -mavx,
 #       which are Intel-only instructions that Apple Silicon's compiler
 #       rejects outright -> those flags are stripped on arm64
-#    9. CMake from PyPI installs a Python wrapper that cannot run inside
+#    9. The same module's math layer includes Intel intrinsic headers
+#       outright, which no flag change can fix -> on arm64 those calls
+#       are translated to ARM NEON with SIMDe
+#   10. CMake from PyPI installs a Python wrapper that cannot run inside
 #       pip's isolated build environment, and the broken wrapper still
 #       satisfies "command -v cmake" forever after -> the real binary
 #       shipped inside the same package is put on PATH instead
@@ -84,7 +87,7 @@ BRAND="KnitMotion"
 OWNER="KnitMotionTeam"
 YEAR="2026"
 SUPPORT="knitmotionteam@gmail.com"
-VERSION="2.2"
+VERSION="2.3"
 COPYRIGHT="Copyright (c) $YEAR $OWNER. All rights reserved."
 LICENSE_LINE="Free for personal and community use. Ask us before changing or selling."
 
