@@ -95,7 +95,7 @@ BRAND="KnitMotion"
 OWNER="KnitMotionTeam"
 YEAR="2026"
 SUPPORT="knitmotionteam@gmail.com"
-VERSION="2.0"
+VERSION="2.1"
 COPYRIGHT="Copyright (c) $YEAR $OWNER. All rights reserved."
 LICENSE_LINE="Free for personal and community use. Ask us before changing or selling."
 
@@ -117,8 +117,8 @@ RAM_TIGHT=16        # GB. Below this, generation may be killed outright.
 # Piped through `bash -c`, there is no script file, so there is also no
 # window of our own to hold open at the end.
 case "$0" in
-    bash|-bash|sh|-sh|/bin/bash|/bin/sh) RUNMODE=pipe ;;
-    *)                                   RUNMODE=file ;;
+    bash|-bash|sh|-sh|/bin/bash|/bin/sh) RUNMODE="pipe" ;;
+    *)                                   RUNMODE="file" ;;
 esac
 
 cd "$HOME" || exit 1
@@ -968,6 +968,95 @@ PY
         "")   warn "Could not check for Intel-only compiler flags." ;;
         *)    ok "Removed Intel-only compiler flags from $(printf '%s' "$SIMD_RESULT" | tr '|' ' ' | wc -w | tr -d ' ') file(s)"
               printf '%s' "$SIMD_RESULT" | tr '|' '\n' | sed 's/^/      /' ;;
+    esac
+fi
+
+# Removing x86 flags alone is not enough: MotionCorrection includes Intel
+# intrinsic headers and types throughout its math layer. On Apple Silicon,
+# use SIMDe to translate that API to ARM NEON/portable code. Intel builds keep
+# the native intrinsics and are therefore unaffected.
+#
+# Every edit below is checked afterwards. These patches key off the shape of
+# upstream's files, so if upstream reorganises them an edit can quietly do
+# nothing — and a silent no-op here surfaces later as a compile failure with
+# no obvious cause.
+if [ "$ARCH" != "x86_64" ]; then
+    ARM_PATCH_RESULT="$(python - "$SRC" <<'PY' 2>>"$LOG"
+import os, sys
+root = sys.argv[1]
+cmake = os.path.join(root, "MotionCorrection", "CMakeLists.txt")
+simd = os.path.join(root, "MotionCorrection", "src", "cpp", "Math", "SIMD.h")
+scalar = os.path.join(root, "MotionCorrection", "src", "cpp", "Math", "Scalar.h")
+if not all(os.path.isfile(p) for p in (cmake, simd, scalar)):
+    print("missing")
+    raise SystemExit
+
+problems = []
+
+s = open(cmake, encoding="utf-8").read()
+marker = "# Kimodo macOS ARM portability patch"
+if marker not in s:
+    anchor = "set(CMAKE_CXX_STANDARD_REQUIRED ON)\n"
+    block = '''\n# Kimodo macOS ARM portability patch\nif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm64|aarch64|ARM64)$")\n    include(FetchContent)\n    FetchContent_Declare(\n        simde\n        GIT_REPOSITORY https://github.com/simd-everywhere/simde.git\n        GIT_TAG v0.8.2\n        GIT_SHALLOW TRUE\n    )\n    FetchContent_MakeAvailable(simde)\nendif()\n'''
+    s = s.replace(anchor, anchor + block, 1)
+    anchor = "    ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp\n)\n"
+    block = '''\nif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm64|aarch64|ARM64)$")\n    target_include_directories(motion_correction_cpp_base PUBLIC ${simde_SOURCE_DIR})\n    target_compile_definitions(motion_correction_cpp_base PUBLIC\n        MOTION_CORRECTION_USE_SIMDE=1 SIMDE_ENABLE_NATIVE_ALIASES=1)\nendif()\n'''
+    s = s.replace(anchor, anchor + block, 1)
+    s = s.replace("if(MSVC)\n", 'if(MSVC AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm64|aarch64|ARM64)$")\n', 1)
+    open(cmake, "w", encoding="utf-8").write(s)
+s = open(cmake, encoding="utf-8").read()
+if "FetchContent_MakeAvailable(simde)" not in s:
+    problems.append("cmake-fetch")
+if "MOTION_CORRECTION_USE_SIMDE" not in s:
+    problems.append("cmake-define")
+
+s = open(simd, encoding="utf-8").read()
+if "MOTION_CORRECTION_USE_SIMDE" not in s:
+    s = s.replace("#include <immintrin.h>", '''#if defined(MOTION_CORRECTION_USE_SIMDE)\n#  if !defined(SIMDE_ENABLE_NATIVE_ALIASES)\n#    define SIMDE_ENABLE_NATIVE_ALIASES\n#  endif\n#  include <simde/x86/avx.h>\n#  include <simde/x86/sse4.1.h>\n#else\n#  include <immintrin.h>\n#endif''', 1)
+    open(simd, "w", encoding="utf-8").write(s)
+s = open(simd, encoding="utf-8").read()
+if "simde/x86/sse4.1.h" not in s:
+    problems.append("simd-header")
+
+s = open(scalar, encoding="utf-8").read()
+if "#include <cstdlib>" not in s:
+    if "#include <stdint.h>" in s:
+        s = s.replace("#include <stdint.h>", "#include <stdint.h>\n#include <cstdlib>", 1)
+    elif "#pragma once" in s:
+        s = s.replace("#pragma once", "#pragma once\n#include <cstdlib>", 1)
+    else:
+        s = "#include <cstdlib>\n" + s
+s = s.replace("return (int8_t) abs( a );", "return (int8_t) std::abs( (int) a );")
+s = s.replace("return (int16_t) abs( a );", "return (int16_t) std::abs( (int) a );")
+s = s.replace("return labs( a );", "return std::abs( a );")
+s = s.replace("return llabs( a );", "return std::abs( a );")
+open(scalar, "w", encoding="utf-8").write(s)
+s = open(scalar, encoding="utf-8").read()
+if "#include <cstdlib>" not in s:
+    problems.append("scalar-include")
+if "labs(" in s.replace("std::abs(", ""):
+    problems.append("scalar-abs")
+
+print("ok" if not problems else "partial:" + ",".join(problems))
+PY
+)"
+    case "$ARM_PATCH_RESULT" in
+        ok)
+            ok "Enabled ARM-compatible SIMD translation"
+            info "The C++ build will fetch SIMDe v0.8.2 from GitHub."
+            ;;
+        missing)
+            warn "MotionCorrection sources moved; ARM patch was not applied"
+            ;;
+        partial:*)
+            warn "The ARM patch only partly applied: ${ARM_PATCH_RESULT#partial:}"
+            warn "Upstream has changed the shape of these files, so the C++"
+            warn "build will probably fail. Everything else still works."
+            warn "Please send $LOG to $SUPPORT so we can update the patch."
+            ;;
+        *)
+            warn "Could not apply the ARM compatibility patch"
+            ;;
     esac
 fi
 
