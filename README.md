@@ -22,8 +22,13 @@ paste this line and press Return:
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/knitmotionteam/kimodo-mac/main/install.sh)"
 ```
 
-That's it. The installer explains each step as it goes and asks before
-doing anything that needs your attention.
+That's it. Nothing is written to disk beforehand, so macOS never marks
+anything as quarantined and no security warning appears. The installer
+explains each step as it goes and asks before doing anything that needs
+your attention.
+
+It is safe to run again: finished steps are skipped, and only what failed
+is retried.
 
 Prefer to read it first? You should:
 
@@ -115,6 +120,9 @@ platforms. This installer handles:
 - Installing Node.js and CMake without requiring Homebrew
 - Adjusting compiler settings so the C++ module builds with Apple's
   Clang, on both Intel and Apple Silicon
+- Translating the C++ module's Intel SIMD instructions to ARM on Apple
+  Silicon, so the motion polish step builds natively rather than being
+  skipped
 - Detecting a Terminal running under Rosetta, which would otherwise make
   an Apple Silicon Mac look like an Intel one
 - Keeping the whole set of library versions consistent from start to

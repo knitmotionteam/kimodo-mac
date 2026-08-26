@@ -39,29 +39,18 @@
 #  an independent piece of work and is not affiliated with, sponsored by
 #  or endorsed by NVIDIA.
 #
-#  TWO WAYS TO RUN THIS
+#  HOW TO RUN THIS
+#    Open Terminal and paste one line:
 #
-#  A. Paste one line into Terminal. Nothing is downloaded to disk, so
-#     macOS never quarantines anything and no security warning appears:
+#      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/knitmotionteam/kimodo-mac/main/install.sh)"
 #
-#       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/knitmotionteam/kimodo-mac/main/install.sh)"
+#    Nothing is written to disk beforehand, so macOS never marks anything
+#    as quarantined and no security warning appears.
 #
-#  B. Open the file from the disk image. macOS will question it, because
-#     the file arrived from the internet. See below.
-#
-#  HOW TO OPEN THIS FILE
-#    Right-click it and choose Open, then click Open again in the dialog.
-#    Double-clicking is blocked by macOS for downloaded scripts.
-#
-#    On macOS 15 (Sequoia) and newer, that dialog may only offer "Done".
-#    If so, go to System Settings > Privacy & Security, scroll down, and
-#    click "Open Anyway" next to the message about this file. Then
-#    right-click > Open once more.
-#
-#    If macOS says "permission denied", the executable bit was lost
-#    (this happens when the file travels inside a .zip). Open Terminal
-#    and run, replacing the path with wherever this file is:
-#      chmod +x ~/Downloads/Install-Kimodo-macOS.command
+#    If you saved this file instead of piping it, run it the same way —
+#    `bash install.sh` — rather than double-clicking. macOS blocks
+#    downloaded scripts that are launched from Finder, and running them
+#    through bash sidesteps that entirely.
 #
 #  Safe to run again: finished steps are skipped. If something fails
 #  halfway, run it again — it picks up where it left off.
@@ -95,7 +84,7 @@ BRAND="KnitMotion"
 OWNER="KnitMotionTeam"
 YEAR="2026"
 SUPPORT="knitmotionteam@gmail.com"
-VERSION="2.1"
+VERSION="2.2"
 COPYRIGHT="Copyright (c) $YEAR $OWNER. All rights reserved."
 LICENSE_LINE="Free for personal and community use. Ask us before changing or selling."
 
@@ -1061,7 +1050,7 @@ PY
 fi
 
 info "Installing Kimodo and everything it needs, and compiling the C++"
-info "part. Five to twenty minutes of near-total silence is normal."
+info "part. This goes quiet for a while. That is normal."
 printf '\n'
 
 # The [all] extra is what brings in the interactive demo's dependencies.
